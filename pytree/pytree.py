@@ -5,35 +5,40 @@ import pathlib
 import os
 from colorama import init, Fore, Back, Style
 
-init(autoreset=True) # autoreset=True clears the color.
+# autoreset=True clears the color.
+init(autoreset=True)
 
 # TODO: Add argparse description and help.
-# TODO: Consise way to write the code.
+def parsed():
+    # creates an argparse object.
+    parser = argparse.ArgumentParser()
+    # creates basic options and addes "target" as argument.
+    parser.add_argument("target", nargs="?", default=pathlib.Path.cwd(), help="path to be examined.")
+    # parse argument object.
+    arg = parser.parse_args()
 
-def tree(directory):
-    directory = pathlib.Path(directory) # create a pathlib object and assign to directory.
-    print(f'{Fore.GREEN + str(directory)}\n     |')
+    return arg.target
 
-    for path in sorted(directory.rglob("*")):   # grabs every path in the 'directory' object that was created using pathlib and sorts them.
-        depth = len(path.relative_to(directory).parts) # 'parts' divides the rel path directory and takes the length of each one to be used in the spacer variable.
-        spacer = '     |' * depth
 
-        if path.is_dir():   # if path is a directory color RED.
-            name = Fore.RED + path.name
-        else:               # if path is a file color YELLOW.
-            name = Fore.YELLOW + path.name
-
-        print(f'{spacer}`-- {name}')
+def tree(dir):
+    # create a pathlib object and assign to .
+    dir = pathlib.Path(dir)
+    print(f"{Fore.GREEN + str(dir)}\n     |")
+    # grabs every path in the "dir" object that was created using pathlib and sorts them.
+    for path in sorted(dir.rglob("*")):
+        # dirparts" divides the rel path dir and takes the length of each one to be used in the spacer variable.
+        depth = len(path.relative_to(dir).parts)
+        spacer = "     |" * depth
+        # return is red if path is a dir, else return is yellow.
+        name = Fore.RED + path.name if path.is_dir() else Fore.YELLOW + path.name
+        print(f"{spacer}`-- {name}")
 
 
 def main():
-    parser = argparse.ArgumentParser()  # creates an argparse object.
-    parser.add_argument("target", nargs="?", default=pathlib.Path.cwd())    # creates basic options and addes 'target' as argument.
-    arg = parser.parse_args()   # parse argument object.
-
-    os.system('clear')
-    tree(arg.target)    # add 'target' as argument.
+    os.system("clear")
+    # add "target" as argument.
+    tree(parsed())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
